@@ -1,6 +1,6 @@
 {
   "name": "hybrid-gulp",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Easily create a hybrid API that works with and without Gulp.",
   "main": "index.js",
   "scripts": {
