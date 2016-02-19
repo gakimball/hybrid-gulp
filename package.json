@@ -1,0 +1,33 @@
+{
+  "name": "hybrid-gulp",
+  "version": "0.0.1",
+  "description": "Easily create a hybrid API that works with and without Gulp.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gakimball/hybrid-gulp.git"
+  },
+  "keywords": [
+    "gulp",
+    "module",
+    "api"
+  ],
+  "author": "Geoff Kimball <geoff@geoffkimball.com> (http://geoffkimball.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gakimball/hybrid-gulp/issues"
+  },
+  "homepage": "https://github.com/gakimball/hybrid-gulp#readme",
+  "dependencies": {
+    "through2": "^2.0.0",
+    "vinyl-fs": "^2.3.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
+    "rimraf": "^2.5.2"
+  }
+}
