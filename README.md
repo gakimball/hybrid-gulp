@@ -63,7 +63,7 @@ module.exports = hybrid({
 
 Configuration setting your plugin uses to take in source files.
 
-### srcOption
+### destOption
 
 - **Type:** String
 - **Default:** `dest`
