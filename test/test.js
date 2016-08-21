@@ -2,6 +2,7 @@ var expect = require('chai').expect;
 var fs = require('fs');
 var path = require('path');
 var reverser = require('./fixtures/module');
+var reverserCallback = require('./fixtures/module-callback');
 var rimraf = require('rimraf');
 var sinon = require('sinon');
 var vfs = require('vinyl-fs');
@@ -14,8 +15,8 @@ describe('Hybrid Gulp', function() {
     rimraf(OUTPUT, done);
   });
 
-  it('works as a file-based plugin if src and dest options are given', function(done) {
-    reverser({ src: INPUT, dest: OUTPUT, reverse: true }, function() {
+  it('works as a standalone plugin if src and dest options are given', function(done) {
+    reverser({ src: INPUT, dest: OUTPUT, reverse: true }).then(function() {
       checkFile(done);
     });
   });
@@ -32,9 +33,15 @@ describe('Hybrid Gulp', function() {
   it('allows for a function to be run when all files are finished processing', function(done) {
     var onFinish = sinon.spy();
 
-    reverser({ src: INPUT, dest: OUTPUT, reverse: true, onFinish: onFinish }, function() {
+    reverser({ src: INPUT, dest: OUTPUT, reverse: true, onFinish: onFinish }).then(function() {
       expect(onFinish.calledOnce).to.be.true;
       done();
+    });
+  });
+
+  it('allows for a plugin to use callbacks instead of promises', function(done) {
+    reverserCallback({ src: INPUT, dest: OUTPUT, reverse: true }, function() {
+      checkFile(done);
     });
   });
 });

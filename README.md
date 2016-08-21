@@ -21,8 +21,10 @@ var plugin = require('plugin');
 plugin({
   src: 'input/**/*',
   dest: 'output'
-}, function() {
+}).then(function() {
   // Callback that runs when all files have been processed
+}).catch(function() {
+  // Callback that runs if there's an error
 });
 ```
 
@@ -94,3 +96,18 @@ Function to run when the plugin finishes processing all files. It takes these pa
 
 - `opts` (Object): Options passed to your plugin function.
 - `cb` (Function): Function to run when the function is done. Doesn't require any parameters.
+
+### callback
+
+- **Type:** Boolean
+- **Default:** `false`
+
+If `true`, your plugin will use callbacks instead of promises, adding an extra parameter to the plugin for the callback.
+
+```js
+var options = {};
+
+plugin(options, function(err) {
+  if (err) throw err;
+});
+```

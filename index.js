@@ -9,6 +9,7 @@ var vfs = require('vinyl-fs');
  * @prop {String} destOption - Option the user passes to the plugin to define destination directory.
  * @prop {Function} transform - Stream function run to transform files.
  * @prop {Function} onFinish - Optional callback to run when all files have been transformed.
+ * @prop {Boolean} callback - If `true`, the plugin will use callbacks instead of promises.
  */
 var DEFAULTS = {
   srcOption: 'src',
@@ -16,7 +17,8 @@ var DEFAULTS = {
   transform: function(file, enc, cb) {
     cb(null, file);
   },
-  onFinish: null
+  onFinish: null,
+  callback: false
 }
 
 /**
@@ -25,7 +27,8 @@ var DEFAULTS = {
  * @returns {Function} Plugin function.
  */
 module.exports = function(config) {
-  config = extend(DEFAULTS, config || {});
+  var defaults = extend({}, DEFAULTS);
+  config = extend(defaults, config || {});
 
   /**
    * Plugin created by hybrid-gulp.
@@ -36,26 +39,37 @@ module.exports = function(config) {
   return function(opts, cb) {
     // Initial setup
     opts = opts || {};
-    var stream;
 
     // If a src option is provided, create a stream out of the files
     if (opts[config.srcOption]) {
-      stream = vfs
-        .src(opts[config.srcOption])
-        .pipe(transform());
-
-      // If a dest option is provided, pipe the stream to disk
-      if (opts[config.destOption]) {
-        stream
-          .pipe(vfs.dest(opts[config.destOption]))
-          .on('finish', function() {
-            if (typeof cb === 'function') cb();
-          });
+      // Default behavior is to return a promise
+      if (!config.callback) {
+        return new Promise(processFiles);
+      }
+      // Alternate behavior is to run a callback
+      else if (typeof cb === 'function') {
+        processFiles(cb, cb);
       }
     }
     // Otherwise, it's already a stream, so just return the transform function
     else {
       return transform();
+    }
+
+    function processFiles(resolve, reject) {
+      var stream;
+
+      stream = vfs
+        .src(opts[config.srcOption])
+        .pipe(transform())
+        .on('error', reject);
+
+      // If a dest option is provided, pipe the stream to disk
+      if (opts[config.destOption]) {
+        stream
+          .pipe(vfs.dest(opts[config.destOption]))
+          .on('finish', resolve);
+      }
     }
 
     /**
