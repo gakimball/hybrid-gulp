@@ -52,6 +52,10 @@ module.exports = hybrid({
   transform: function(file, enc, cb, opts) {
     file.contents = new Buffer(MyLibrary.doSomething(file));
     cb(null, file);
+  },
+  onFinish: function(opts, cb) {
+    MyLibrary.cleanupStuff(opts);
+    cb();
   }
 })
 ```
@@ -59,14 +63,14 @@ module.exports = hybrid({
 ### srcOption
 
 - **Type:** String
-- **Default:** `src`
+- **Default:** `'src'`
 
 Configuration setting your plugin uses to take in source files.
 
 ### destOption
 
 - **Type:** String
-- **Default:** `dest`
+- **Default:** `'dest'`
 
 Configuration setting your plugin uses to set an output folder.
 
@@ -80,3 +84,13 @@ Function to manipulate input files. It's a through2 object stream that takes the
 - `enc` (String): Encoding of the file.
 - `cb` (Function): Function to run when processing is done. Call it like `cb(err, file)`, where `err` is an error (or `null` if there was no error), and `file` is a modified Vinyl file.
 - `opts` (Object): Options passed to your plugin function.
+
+### onFinish
+
+- **Type:** Function
+- **Default:** `null`
+
+Function to run when the plugin finishes processing all files. It takes these parameters:
+
+- `opts` (Object): Options passed to your plugin function.
+- `cb` (Function): Function to run when the function is done. Doesn't require any parameters.

@@ -3,6 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var reverser = require('./fixtures/module');
 var rimraf = require('rimraf');
+var sinon = require('sinon');
 var vfs = require('vinyl-fs');
 
 var INPUT = './test/fixtures/input.txt';
@@ -25,7 +26,16 @@ describe('Hybrid Gulp', function() {
       .pipe(vfs.dest(OUTPUT))
       .on('finish', function() {
         checkFile(done);
-      })
+      });
+  });
+
+  it('allows for a function to be run when all files are finished processing', function(done) {
+    var onFinish = sinon.spy();
+
+    reverser({ src: INPUT, dest: OUTPUT, reverse: true, onFinish: onFinish }, function() {
+      expect(onFinish.calledOnce).to.be.true;
+      done();
+    });
   });
 });
 

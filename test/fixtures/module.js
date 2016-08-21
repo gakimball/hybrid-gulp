@@ -17,5 +17,9 @@ module.exports = hybrid({
     if (typeof r === 'undefined') r = new Reverser(opts);
     file.contents = new Buffer(r.reverse(file.contents.toString()));
     cb(null, file);
+  },
+  onFinish: function(opts, cb) {
+    if (typeof opts.onFinish === 'function') opts.onFinish();
+    cb();
   }
 });
