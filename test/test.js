@@ -21,6 +21,12 @@ describe('Hybrid Gulp', function() {
     });
   });
 
+  it('works as a standalone plugin if ONLY src option is given', function(done) {
+    reverser({ src: INPUT, reverse: true }).then(function() {
+      checkNoFile(done);
+    });
+  });
+
   it('works as a stream-based plugin if src and dest options are omitted', function(done) {
     vfs.src(INPUT)
       .pipe(reverser({ reverse: true }))
@@ -50,6 +56,13 @@ function checkFile(done) {
   fs.readFile(path.join(OUTPUT, 'input.txt'), function(err, data) {
     if (err) throw err;
     expect(data.toString()).to.contain('esrever');
+    done();
+  });
+}
+
+function checkNoFile(done) {
+  fs.stat(path.join(OUTPUT, 'input.txt'), function(err, data) {
+    expect(err).to.be.defined;
     done();
   });
 }

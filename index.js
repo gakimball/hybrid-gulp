@@ -69,6 +69,8 @@ module.exports = function(config) {
         stream
           .pipe(vfs.dest(opts[config.destOption]))
           .on('finish', resolve);
+      } else {
+        resolve();
       }
     }
 
